@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pjt/providers/trip_provider.dart';
 import 'package:flutter_pjt/screens/about_screen.dart';
+import 'package:flutter_pjt/screens/myinfo_screen.dart';
 import 'package:provider/provider.dart';
 import './routes/app_routes.dart';
 import './screens/home_screen.dart';
@@ -30,7 +31,8 @@ class TripApp extends StatelessWidget{
         initialRoute: AppRoutes.home,
         routes: {
           AppRoutes.home: (context) => HomeScreen(),
-          AppRoutes.about: (context) => AboutScreen()
+          AppRoutes.about: (context) => AboutScreen(),
+          AppRoutes.myInfo: (context) => MyinfoScreen(),
         },
       ),
     );
