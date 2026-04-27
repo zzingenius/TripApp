@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pjt/screens/home/home_middle_widget.dart';
 import 'package:flutter_pjt/screens/home/home_top_widget.dart';
 
 class HomeScreen extends StatelessWidget{
@@ -14,7 +15,17 @@ class HomeScreen extends StatelessWidget{
       ),
       body: Column(
         children: [
-          HomeTopWidget()
+          HomeTopWidget(),
+          Expanded(
+              child: Padding(
+                  padding: EdgeInsetsGeometry.all(16),
+                  child: Column(
+                    children: [
+                      HomeMiddleWidget()
+                    ],
+                  ),
+              )
+          )
         ],
       ),
     );
