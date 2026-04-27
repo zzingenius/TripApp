@@ -1,17 +1,16 @@
-# flutter_pjt
+# TripApp
 
-A new Flutter project.
+멋쟁이사자처럼 안드로이드 기반 앱 개발 실무 부트캠프 6기\
+플러터 미니 프로젝트[2026.04.27~2026.05.04]
 
-## Getting Started
+## 소개
 
-This project is a starting point for a Flutter application.
+플러터 기반의 여행 일정 수립 및 관리 앱입니다.
 
-A few resources to get you started if this is your first Flutter project:
+***Day 01*** : 기본 뼈대 생성(라우팅, 테마), 메인 화면 및 설정 스크린 제작
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## 기술 스택
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white)
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
