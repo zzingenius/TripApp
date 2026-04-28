@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pjt/providers/news_provider.dart';
+import 'package:flutter_pjt/screens/detail/news_list_widget.dart';
+import 'package:provider/provider.dart';
 import '../models/trip_destination.dart';
 import './detail/product_list_widget.dart';
 
@@ -19,6 +22,14 @@ class DetailScreenState extends State<DetailScreen> with SingleTickerProviderSta
   void initState() {
     super.initState();
     tabController = TabController(length: 2, vsync: this);
+
+    tabController.addListener((){
+      ///tabController.indexIsChanging : 뉴스탭이 새로 클릭되어 오픈되는 순간
+      if (tabController.index == 1 && tabController.indexIsChanging){
+        final newsProvider = Provider.of<NewsProvider>(context, listen: false);
+        newsProvider.fetchNews();
+      }
+    });
   }
 
   @override
@@ -44,7 +55,7 @@ class DetailScreenState extends State<DetailScreen> with SingleTickerProviderSta
           controller: tabController,
           children: [
             ProductListWidget(widget.destination),
-            Text('뉴스')
+            NewsListWidget()
           ]
       ),
     );
