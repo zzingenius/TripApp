@@ -27,7 +27,9 @@ class DetailScreenState extends State<DetailScreen> with SingleTickerProviderSta
       ///tabController.indexIsChanging : 뉴스탭이 새로 클릭되어 오픈되는 순간
       if (tabController.index == 1 && tabController.indexIsChanging){
         final newsProvider = Provider.of<NewsProvider>(context, listen: false);
-        newsProvider.fetchNews();
+        if(newsProvider.articles.isEmpty){
+          newsProvider.fetchNews();
+        }
       }
     });
   }

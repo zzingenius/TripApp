@@ -13,6 +13,7 @@ class NewsProvider with ChangeNotifier{
   String? get error => _error;
 
   Future<void> fetchNews() async{
+    print('fetchNews 들어옴');
     _isLoading = true;
     _error = null;
     notifyListeners();
