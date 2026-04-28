@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pjt/models/trip_destination.dart';
 import 'package:flutter_pjt/providers/trip_provider.dart';
 import 'package:flutter_pjt/providers/user_provider.dart';
 import 'package:flutter_pjt/screens/about_screen.dart';
+import 'package:flutter_pjt/screens/detail_screen.dart';
 import 'package:flutter_pjt/screens/myinfo_screen.dart';
 import 'package:provider/provider.dart';
 import './routes/app_routes.dart';
@@ -36,6 +38,15 @@ class TripApp extends StatelessWidget{
           AppRoutes.home: (context) => HomeScreen(),
           AppRoutes.about: (context) => AboutScreen(),
           AppRoutes.myInfo: (context) => MyinfoScreen(),
+        },
+        onGenerateRoute: (settings){
+          if(settings.name == AppRoutes.detail){
+            final destination = settings.arguments as TripDestination;
+            return MaterialPageRoute(
+              builder: (context) => DetailScreen(destination)
+            );
+          }
+          return null;
         },
       ),
     );
