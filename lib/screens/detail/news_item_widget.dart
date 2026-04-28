@@ -8,7 +8,6 @@ class NewsItemWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ListTile(
       leading: article.urlToImage != null ?
       Container(

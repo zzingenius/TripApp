@@ -11,9 +11,9 @@ class NewsService {
   static String get _apiKey => dotenv.env['API_KEY'] ?? '';
 
   //네트워킹을 위해서 호출되는 함수
-  Future<List<NewsArticle>> getNews() async{
+  Future<List<NewsArticle>> getNews(String destination) async{
     try{
-      final response = await http.get(Uri.parse('$_baseUrl/everything?q=swiss&page=1&pageSize=10&apiKey=$_apiKey'));
+      final response = await http.get(Uri.parse('$_baseUrl/everything?q=$destination&page=1&pageSize=10&apiKey=$_apiKey'));
       debugPrint('getNews');
       if(response.statusCode == 200){
         final data = json.decode(response.body);

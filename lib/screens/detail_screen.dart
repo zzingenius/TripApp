@@ -24,12 +24,14 @@ class DetailScreenState extends State<DetailScreen> with SingleTickerProviderSta
     tabController = TabController(length: 2, vsync: this);
 
     tabController.addListener((){
+      print('에드 리스너');
+      print('왜 이래 진짜 tabController.index : ${tabController.index}, tabController.indexIsChanging : ${tabController.indexIsChanging}');
+
       ///tabController.indexIsChanging : 뉴스탭이 새로 클릭되어 오픈되는 순간
-      if (tabController.index == 1 && tabController.indexIsChanging){
+      if (tabController.index == 1 && !tabController.indexIsChanging){
+        print(widget.destination.country);
         final newsProvider = Provider.of<NewsProvider>(context, listen: false);
-        if(newsProvider.articles.isEmpty){
-          newsProvider.fetchNews();
-        }
+        newsProvider.fetchNews(widget.destination.country);
       }
     });
   }
