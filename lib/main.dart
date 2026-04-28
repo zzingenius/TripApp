@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pjt/providers/trip_provider.dart';
+import 'package:flutter_pjt/providers/user_provider.dart';
 import 'package:flutter_pjt/screens/about_screen.dart';
 import 'package:flutter_pjt/screens/myinfo_screen.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,8 @@ class TripApp extends StatelessWidget{
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TripProvider(),),
+        //.. =>UserProvider를 등록하면서 함수 한 번만 호출하겠다
+        ChangeNotifierProvider(create: (_) => UserProvider()..loadUserData()),
       ],
       child: MaterialApp(
         theme: ThemeData(

@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_pjt/models/user_info.dart';
+import 'package:flutter_pjt/providers/user_provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class MyinfoFormWidget extends StatefulWidget{
   @override
@@ -16,6 +19,20 @@ class MyinfoFormWidgetState extends State<MyinfoFormWidget>{
   final emailController = TextEditingController();
   String? profileImagePath; //프사 경로
   ImagePicker picker = ImagePicker();
+
+  //이전 데이터가 있다면 해당 데이터가 화면에 출력되야 한다.
+  @override
+  void initState() {
+    super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    if(userProvider.userInfo != null){
+      nameController.text = userProvider.userInfo!.name!;
+      emailController.text = userProvider.userInfo!.email!;
+      profileImagePath = userProvider.userInfo!.profileImagePath?? null;
+    }
+
+  }
 
   void showImagePickerDialog(){
     //dialog 띄우기
@@ -71,8 +88,15 @@ class MyinfoFormWidgetState extends State<MyinfoFormWidget>{
       );
       return;
     }
+    //유저 입력 데이터 획득
+    final userInfo = UserInfo(
+      name: nameController.text.trim(),
+      email: emailController.text.trim(),
+      profileImagePath: profileImagePath
+    );
 
     try{
+      await Provider.of<UserProvider>(context, listen: false).updateUserInfo(userInfo);
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('사용자 정보가 저장되었습니다.'))
       );
