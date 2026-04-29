@@ -9,7 +9,7 @@ class NewsArticle{
 
   NewsArticle({
     required this.title,
-    required this.description,
+    this.description = '기사 없음',
     required this.url,
     required this.publishedAt,
     this.urlToImage,
@@ -19,7 +19,7 @@ class NewsArticle{
   factory NewsArticle.fromJson(Map<String, dynamic> json){
     return NewsArticle(
         title: json['title'],
-        description: json['description'],
+        description: json['description'] ?? '기사 없음',
         url: json['url'],
         publishedAt: json['publishedAt'],
         urlToImage: json['urlToImage'],
