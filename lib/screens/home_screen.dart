@@ -7,13 +7,23 @@ import 'package:flutter_pjt/screens/home/home_top_widget.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget{
+  bool isSearching = false;
+  void search(){
+    isSearching = !isSearching;
+  }
   @override
   Widget build(BuildContext context) {
+    final isSearching = context.watch().isSearching;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trip App'),
+        title: isSearching? TextField(
+          decoration: InputDecoration(
+            hintText: '검색어를 입력하세요'
+          ),
+        )
+            : Text('Trip App'),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.search)),
+          IconButton(onPressed: (){search;}, icon: Icon(Icons.search)),
           IconButton(onPressed: (){}, icon: Icon(Icons.more_vert))
         ],
       ),
