@@ -14,7 +14,6 @@ class NewsProvider with ChangeNotifier{
   String country = '';
 
   Future<void> fetchNews([String? destination]) async{
-    print('fetchNews 들어옴');
     _isLoading = true;
     _error = null;
     notifyListeners();

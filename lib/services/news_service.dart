@@ -14,11 +14,9 @@ class NewsService {
   Future<List<NewsArticle>> getNews(String destination) async{
     try{
       final response = await http.get(Uri.parse('$_baseUrl/everything?q=$destination&page=1&pageSize=10&apiKey=$_apiKey'));
-      debugPrint('getNews');
       if(response.statusCode == 200){
         final data = json.decode(response.body);
         final articles = data['articles'] as List;
-        debugPrint('200번대 ${response.body.isEmpty}');
 
         return articles.map((article) => NewsArticle.fromJson(article)).toList();
       }else{
