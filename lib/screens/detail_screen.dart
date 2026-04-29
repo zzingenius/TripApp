@@ -30,8 +30,8 @@ class DetailScreenState extends State<DetailScreen> with SingleTickerProviderSta
       if (tabController.index == 1 && tabController.indexIsChanging){
         print(widget.destination.country);
         final newsProvider = Provider.of<NewsProvider>(context, listen: false);
-        if(newsProvider.articles.isEmpty){
-          newsProvider.fetchNews();
+        if(newsProvider.articles.isEmpty || newsProvider.country != widget.destination.country){
+          newsProvider.fetchNews(widget.destination.country);
         }
       }
     });
