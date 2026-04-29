@@ -11,14 +11,19 @@ class NewsProvider with ChangeNotifier{
   List<NewsArticle> get articles => _articles;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  String country = '';
 
-  Future<void> fetchNews() async{
+  Future<void> fetchNews([String? destination]) async{
+    print('fetchNews 들어옴');
     _isLoading = true;
     _error = null;
     notifyListeners();
 
+    if (destination != null) country = destination;
+
     try{
-      _articles = await _newsService.getNews();
+      print('news provider destination : $destination');
+      _articles = await _newsService.getNews(destination?? country);
     }catch (e){
       _error = e.toString();
     }finally{

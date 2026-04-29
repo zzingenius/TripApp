@@ -46,7 +46,7 @@ class TripProvider with ChangeNotifier{
     TripDestination(
       id: 4,
       name: '하와이',
-      country: 'Hawaiian',
+      country: 'Hawaii',
       description: '세계 허니무너들의 지상낙원',
       imagePath: 'assets/images/main_hawaii.jpg',
       discount: '최대 10% 할인',

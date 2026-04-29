@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pjt/models/news_article.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsItemWidget extends StatelessWidget{
   NewsArticle article;
@@ -7,7 +8,6 @@ class NewsItemWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ListTile(
       leading: article.urlToImage != null ?
       Container(
@@ -39,7 +39,9 @@ class NewsItemWidget extends StatelessWidget{
           Text(article.source ?? '', style: TextStyle(fontSize: 12, color:  Colors.blue),)
         ],
       ),
-      onTap: (){},
+      onTap: () async{
+        await launchUrl(Uri.parse(article.url));
+      },
     );
   }
 }
