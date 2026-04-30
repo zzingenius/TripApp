@@ -40,9 +40,10 @@ dependencies:
   #플랫폼에 맞는 파일 경로를 만드는 패키지
   path: ^1.9.1
   http: ^1.6.0
-  flutter_dotenv: ^5.1.0
+  flutter_dotenv: ^5.1.0 #.env
 
-  url_launcher: ^6.3.2
+  url_launcher: ^6.3.2 #외부 브라우저 이용시
+  shared_preferences: ^2.5.5 #로컬 db
 
 dev_dependencies:
   flutter_test:
