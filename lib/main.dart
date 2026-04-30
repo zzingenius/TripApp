@@ -30,7 +30,7 @@ class TripApp extends StatelessWidget{
     //테마 설정 + 라우팅 등록 + 앱 전역 상태 등록
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TripProvider(),),
+        ChangeNotifierProvider(create: (_) => TripProvider()..fetchDestinations()),
         //.. =>UserProvider를 등록하면서 함수 한 번만 호출하겠다
         ChangeNotifierProvider(create: (_) => UserProvider()..loadUserData()),
         ChangeNotifierProvider(create: (_) => NewsProvider()),

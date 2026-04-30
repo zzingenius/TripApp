@@ -14,4 +14,15 @@ class TripDestination {
     required this.imagePath,
     required this.discount,
   });
+
+  factory TripDestination.fromJson(Map<String, dynamic> json){
+    return TripDestination(
+        id: json['id'],
+        name: json['name'],
+        country: json['country'],
+        description: json['description'],
+        imagePath: json['imageUrl'],
+        discount: json['discount']
+    );
+  }
 }
