@@ -15,7 +15,7 @@ class ProductItemWidget extends StatelessWidget{
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          image: DecorationImage(image: AssetImage(destination.imagePath), fit: BoxFit.cover)
+          image: DecorationImage(image: NetworkImage(destination.imagePath), fit: BoxFit.cover)
         ),
       ),
       title: Text('${destination.name} 여행 상품 ${index + 1}'),

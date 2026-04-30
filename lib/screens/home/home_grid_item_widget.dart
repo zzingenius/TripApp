@@ -16,7 +16,7 @@ class HomeGridItem extends StatelessWidget{
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                  child: Image.asset(
+                  child: Image.network(
                     destination.imagePath,
                     fit: BoxFit.cover,
                   ),

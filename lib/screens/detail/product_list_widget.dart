@@ -18,7 +18,7 @@ class ProductListWidget extends StatelessWidget{
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              image: DecorationImage(image: AssetImage(destination.imagePath), fit: BoxFit.cover)
+              image: DecorationImage(image: NetworkImage(destination.imagePath), fit: BoxFit.cover)
             ),
           ),
           SizedBox(height: 16,),
