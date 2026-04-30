@@ -24,7 +24,10 @@ class HomeScreenState extends State<HomeScreen>{
     super.initState();
     _loadHistory();
   }
-  void _changeSearchingStatus(){
+  void _changeSearchingStatus() {
+    if(!_isSearching){
+        _loadHistory();
+    }
     setState(() {
       _isSearching = !_isSearching;
     });
@@ -39,27 +42,78 @@ class HomeScreenState extends State<HomeScreen>{
   Future<void> _save(String query) async {
     if(query.isEmpty) return;
 
-    _searchHistory.add(query);
-    _changeSearchingStatus();
+    if(!_searchHistory.contains(query)){
+      _searchHistory.add(query);
+      await SharedPrefsService.instance.save(_searchHistory);
+    }
+  }
+  Widget historyList( BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options){
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Material(
+        elevation: 2,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 200),
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: options.length,
+            itemBuilder: (context, index) {
+              final item = options.toList().reversed.elementAt(index);
+              return ListTile(
+                leading: Icon(Icons.history),
+                title: Text(item),
+                trailing: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    setState(() {
+                      _searchHistory.remove(item);
+                    });
+                    SharedPrefsService.instance.save(_searchHistory);
+                  },
+                ),
+                onTap: () => onSelected(item),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _isSearching? TextField(
-          decoration: InputDecoration(
-              hintText: '검색어를 입력하세요'
-          ),
-          onSubmitted: (input){
-            if(input.trim().isEmpty) {
-              _changeSearchingStatus();
-            } else {
-              _save(input);
+        title: _isSearching? Autocomplete(
+            optionsBuilder: (inputField){
+              if(inputField.text.isEmpty) {
+                return _searchHistory;
+              }
+              return _searchHistory.where((item) => item.contains(inputField.text));
+            },
+            onSelected: (selected){
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('검색어 $input'))
+                  SnackBar(content: Text('검색어 : $selected'))
               );
-            }
-          },
+              _changeSearchingStatus();
+            },
+            fieldViewBuilder: (context, controller, focusNode, onSubmitted){
+              return TextField(
+                controller: controller,
+                focusNode: focusNode,
+                autofocus: true,
+                decoration: InputDecoration(hintText: '검색어를 입력하세요'),
+                onSubmitted: (input){
+                  if (input.trim().isNotEmpty){
+                    _save(input);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('검색어 : $input'))
+                    );
+                  }
+                  _changeSearchingStatus();
+                },
+              );
+            },
+            optionsViewBuilder: historyList,
         )
             : Text('Trip App'),
         actions: _isSearching? [
