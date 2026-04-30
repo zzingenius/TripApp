@@ -116,7 +116,7 @@ class ProductDetailDialog extends StatelessWidget {
                     height: 130,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(destination.imagePath), fit: BoxFit.cover)
+                      image: DecorationImage(image: NetworkImage(destination.imagePath), fit: BoxFit.cover)
                     ),
                   ),
                   Center(
@@ -124,6 +124,7 @@ class ProductDetailDialog extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
+                        color: Colors.blue.shade50,
                         margin: EdgeInsets.all(13),
                         child: Padding(
                           padding: EdgeInsets.all(16),

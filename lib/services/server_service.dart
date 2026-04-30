@@ -11,7 +11,6 @@ class ServerService {
     try{
       final response = await http.get(Uri.parse('$baseUrl/destinations'));
       if(response.statusCode == 200){
-        // final data = json.decode(response.body);
         final List<dynamic> data = jsonDecode(response.body);
         return data.map((des) => TripDestination.fromJson(des)).toList();
       }else{
@@ -19,22 +18,6 @@ class ServerService {
         throw Exception('error ${response.statusCode}');
       }
 
-    }catch(e){
-      print('server connect error $e');
-      throw Exception('server connected fail $e');
-
-    }
-  }
-  Future<TripDestination> getDestination(String id) async{
-    try{
-      final response = await http.get(Uri.parse('$baseUrl/destinations/$id'));
-      if(response.statusCode == 200){
-        final data = json.decode(response.body);
-        return data.map((des) => TripDestination.fromJson(des));
-      }else{
-        print('error ${response.statusCode}');
-        throw Exception('error ${response.statusCode}');
-      }
     }catch(e){
       print('server connect error $e');
       throw Exception('server connected fail $e');
