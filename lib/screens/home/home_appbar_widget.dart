@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pjt/providers/trip_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../services/shared_prefs_service.dart';
 
@@ -18,6 +20,7 @@ class HomeAppbarWidgetState extends State<HomeAppbarWidget>{
   void _changeSearchingStatus() {
     if(!_isSearching){
       _loadHistory();
+      context.read<TripProvider>().clearFilter();
     }
     setState(() {
       _isSearching = !_isSearching;
@@ -81,6 +84,7 @@ class HomeAppbarWidgetState extends State<HomeAppbarWidget>{
           return _searchHistory.where((item) => item.contains(inputField.text));
         },
         onSelected: (selected){
+          context.read<TripProvider>().filterDestination(selected);
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('검색어 : $selected'))
           );
@@ -94,6 +98,7 @@ class HomeAppbarWidgetState extends State<HomeAppbarWidget>{
             decoration: InputDecoration(hintText: '검색어를 입력하세요'),
             onSubmitted: (input){
               if (input.trim().isNotEmpty){
+                context.read<TripProvider>().filterDestination(input);
                 _save(input);
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('검색어 : $input'))
