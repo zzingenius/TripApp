@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pjt/models/trip_info.dart';
 import 'package:flutter_pjt/services/server_service.dart';
 import '../models/trip_destination.dart';
 
@@ -8,10 +9,16 @@ class TripProvider with ChangeNotifier{
   List<TripDestination> _filterDestinations = [];
   bool _isLoading = false;
   String? _error;
+  TripInfo? _tripInfo;
+  bool _isInfoLoading = false;
+  String? _infoError;
 
   List<TripDestination> get destination => _filterDestinations;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  TripInfo? get tripInfo => _tripInfo;
+  bool get isInfoLoading => _isInfoLoading;
+  String? get infoError => _infoError;
 
   Future<void> fetchDestinations() async{
     _isLoading = true;
@@ -46,6 +53,19 @@ class TripProvider with ChangeNotifier{
       return _allDestinations.firstWhere((destination) => destination.id == id);
     }catch(e){
       return null;
+    }
+  }
+  Future<void> fetchTripInfo(int id) async{
+    _isInfoLoading = true;
+    _tripInfo = null;
+    _infoError = null;
+    try{
+      _tripInfo = await _serverService.getTripInfo(id);
+    }catch (e){
+      _infoError = e.toString();
+    } finally{
+      _isInfoLoading = false;
+      notifyListeners();
     }
   }
 }

@@ -2,13 +2,18 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_pjt/models/trip_destination.dart';
+import 'package:flutter_pjt/models/trip_info.dart';
+import 'package:flutter_pjt/providers/trip_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailDialog extends StatelessWidget {
   TripDestination destination;
   int index;
-  ProductDetailDialog(this.index, this.destination);
+  int id;
 
-  static void show(BuildContext context, int index, TripDestination destination){
+  ProductDetailDialog(this.index, this.destination, this.id);
+
+  static void show(BuildContext context, int index, TripDestination destination, int id){
     showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -17,30 +22,25 @@ class ProductDetailDialog extends StatelessWidget {
         ),
         builder: (context) => SizedBox(
           height: MediaQuery.of(context).size.height * 0.9,
-          child: ProductDetailDialog(index, destination),
+          child: ProductDetailDialog(index, destination, id),
         )
     );
   }
-  Widget info(String type){
+  Widget info(String type, String value){
     IconData? icon;
-    String value = '';
 
     switch (type){
       case '일정' :
         icon = Icons.calendar_month;
-        value = ': 1월 1일 ~ 1월 4일 (3박 4일)';
         break;
       case '가격' :
         icon = Icons.attach_money;
-        value = ': ${Random().nextInt(130)}만원';
         break;
       case '항공' :
         icon = Icons.flight;
-        value = ': 대한항공';
         break;
       case '호텔' :
         icon = Icons.hotel;
-        value = ': 전 일정 4성급 이상 호텔';
         break;
 
     }
@@ -51,40 +51,35 @@ class ProductDetailDialog extends StatelessWidget {
         Icon(icon, color: Colors.blue,),
         SizedBox(width: 3,),
         Text('$type ', style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-        Text(value, style: TextStyle(fontSize: 17),)
+        Text(': $value', style: TextStyle(fontSize: 17),)
       ],
     );
   }
-  Widget plan(int day){
+  Widget plan(List<DayDetail> details) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: details.expand((detail) => [
         Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7)
-          ),
-          color: Colors.blue.shade400,
-
-          margin: EdgeInsets.all(13),
-          child: Padding(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(7)
+            ),
+            color: Colors.blue.shade400,
+            margin: EdgeInsets.all(13),
+            child: Padding(
               padding: EdgeInsets.only(left: 13, top: 8, bottom: 8, right: 13),
-              child: Text('$day일차', style: TextStyle(color: Colors.white, fontSize: 17),),
-          )
+              child: Text(detail.day,
+                style: TextStyle(color: Colors.white, fontSize: 17),
+              ),
+            )
         ),
-        Padding(
-            padding: EdgeInsets.only(left: 22),
-            child: Text(' - 인천공항 출발 (대한항공 KE093, 13:20) ', style: TextStyle(fontSize: 17),),
+        ...detail.info.map((infoItem) =>
+            Padding(
+              padding: EdgeInsets.only(left: 22),
+              child: Text(' - $infoItem', style: TextStyle(fontSize: 17)),
+            )
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 22),
-          child: Text(' - 인천공항 출발 (대한항공 KE093, 13:20) ', style: TextStyle(fontSize: 17),),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 22),
-          child: Text(' - 인천공항 출발 (대한항공 KE093, 13:20) ', style: TextStyle(fontSize: 17),),
-        ),
-        SizedBox(height: 10,)
-      ],
+        SizedBox(height: 10),
+      ]).toList(),
     );
   }
 
@@ -106,61 +101,85 @@ class ProductDetailDialog extends StatelessWidget {
               ],
             ),
         ),
+        Consumer<TripProvider>(
+            builder: (context, tripProvider, child){
+              if(tripProvider.isInfoLoading){
+                return Center(child: CircularProgressIndicator(),);
+              }
+              if(tripProvider.infoError != null){
+                return Center(
+                  child: Column(
+                    children: [
+                      Icon(Icons.error, size: 64, color: Colors.red,),
+                      SizedBox(height: 16,),
+                      Text('오류가 발생했습니다. \n ${tripProvider.infoError}'),
+                      SizedBox(height: 16,),
+                      ElevatedButton(onPressed: ()=> tripProvider.fetchTripInfo(id), child: Text('다시시도'))
+                    ],
+                  )
+                );
+              }
+              if(tripProvider.tripInfo == null){
+                return Text('일정을 불러올 수 없습니다.');
+              }
 
-        Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 130,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(image: NetworkImage(destination.imagePath), fit: BoxFit.cover)
-                    ),
-                  ),
-                  Center(
-                    child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+              return Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 130,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(image: NetworkImage(destination.imagePath), fit: BoxFit.cover)
+                          ),
                         ),
-                        color: Colors.blue.shade50,
-                        margin: EdgeInsets.all(13),
-                        child: Padding(
+                        Center(
+                          child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              color: Colors.blue.shade50,
+                              margin: EdgeInsets.all(13),
+                              child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  children: [
+                                    info('일정', tripProvider.tripInfo!.days),
+                                    SizedBox(height: 8,),
+                                    info('가격', tripProvider.tripInfo!.price),
+                                    SizedBox(height: 8,),
+
+                                    info('항공', tripProvider.tripInfo!.flight),
+                                    SizedBox(height: 8,),
+
+                                    info('호텔', tripProvider.tripInfo!.hotel),
+                                  ],
+                                ),
+                              )
+                          ),
+                        ),
+                        Padding(
                           padding: EdgeInsets.all(16),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              info('일정'),
-                              SizedBox(height: 8,),
-                              info('가격'),
-                              SizedBox(height: 8,),
+                              Text('상세 일정', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                              plan(tripProvider.tripInfo!.details)
 
-                              info('항공'),
-                              SizedBox(height: 8,),
-
-                              info('호텔'),
                             ],
                           ),
-                        )
+                        ),
+
+                      ],
                     ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('상세 일정', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
-
-                          ...List.generate(4, (i) => plan(i + 1))
-
-                        ],
-                      ),
-                  ),
-
-                ],
-              ),
-            )
+                  )
+              );
+            }
         ),
+
+
       ],
     ) ;
   }

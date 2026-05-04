@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_pjt/providers/trip_provider.dart';
 import 'package:flutter_pjt/screens/detail/product_detail_dialog.dart';
+import 'package:provider/provider.dart';
 import '../../models/trip_destination.dart';
 
 class ProductItemWidget extends StatelessWidget{
@@ -21,7 +25,11 @@ class ProductItemWidget extends StatelessWidget{
       title: Text('${destination.name} 여행 상품 ${index + 1}'),
       subtitle: Text('${(index + 1) * 100}만원부터'),
       trailing: Icon(Icons.arrow_forward_ios),
-      onTap: (){ProductDetailDialog.show(context, index, destination);},
+      onTap: (){
+        int id = Random().nextInt(5) + 1;
+        context.read<TripProvider>().fetchTripInfo(id);
+        ProductDetailDialog.show(context, index, destination, id);
+        },
     );
   }
 
