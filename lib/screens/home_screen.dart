@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pjt/providers/trip_provider.dart';
+import 'package:flutter_pjt/screens/home/home_appbar_widget.dart';
 import 'package:flutter_pjt/screens/home/home_drawer_widget.dart';
 import 'package:flutter_pjt/screens/home/home_grid_widget.dart';
 import 'package:flutter_pjt/screens/home/home_middle_widget.dart';
 import 'package:flutter_pjt/screens/home/home_top_widget.dart';
-import 'package:flutter_pjt/services/shared_prefs_service.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -16,114 +16,10 @@ class HomeScreen extends StatefulWidget{
 }
 
 class HomeScreenState extends State<HomeScreen>{
-  bool _isSearching = false;
-  List<String> _searchHistory = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadHistory();
-  }
-  void _changeSearchingStatus() {
-    if(!_isSearching){
-        _loadHistory();
-    }
-    setState(() {
-      _isSearching = !_isSearching;
-    });
-  }
-  Future<void> _loadHistory() async {
-    final history = await SharedPrefsService.instance.loadHistory();
-    setState(() {
-      _searchHistory = history;
-    });
-  }
-
-  Future<void> _save(String query) async {
-    if(query.isEmpty) return;
-
-    if(!_searchHistory.contains(query)){
-      _searchHistory.add(query);
-      await SharedPrefsService.instance.save(_searchHistory);
-    }
-  }
-  Widget historyList( BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options){
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Material(
-        elevation: 2,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 200),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: options.length,
-            itemBuilder: (context, index) {
-              final item = options.toList().reversed.elementAt(index);
-              return ListTile(
-                leading: Icon(Icons.history),
-                title: Text(item),
-                trailing: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    setState(() {
-                      _searchHistory.remove(item);
-                    });
-                    SharedPrefsService.instance.save(_searchHistory);
-                  },
-                ),
-                onTap: () => onSelected(item),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: _isSearching? Autocomplete(
-            optionsBuilder: (inputField){
-              if(inputField.text.isEmpty) {
-                return _searchHistory;
-              }
-              return _searchHistory.where((item) => item.contains(inputField.text));
-            },
-            onSelected: (selected){
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('검색어 : $selected'))
-              );
-              _changeSearchingStatus();
-            },
-            fieldViewBuilder: (context, controller, focusNode, onSubmitted){
-              return TextField(
-                controller: controller,
-                focusNode: focusNode,
-                autofocus: true,
-                decoration: InputDecoration(hintText: '검색어를 입력하세요'),
-                onSubmitted: (input){
-                  if (input.trim().isNotEmpty){
-                    _save(input);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('검색어 : $input'))
-                    );
-                  }
-                  _changeSearchingStatus();
-                },
-              );
-            },
-            optionsViewBuilder: historyList,
-        )
-            : Text('Trip App'),
-        actions: _isSearching? [
-          IconButton(onPressed: _changeSearchingStatus, icon: Icon(Icons.close))
-        ]
-            : [
-          IconButton(onPressed: _changeSearchingStatus, icon: Icon(Icons.search)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.more_vert))
-        ],
-      ),
+      appBar: HomeAppbarWidget(),
       drawer: HomeDrawerWidget(),
       body: Column(
         children: [
